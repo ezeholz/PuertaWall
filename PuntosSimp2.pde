@@ -27,6 +27,7 @@ void setup() {
   bg[0].resize(width, height);
   
   back = bg[0];
+  if (rond == -1){pose[3] = 0;}
   
   for(int i = 1; i < 3; i++) {
     bg[i] = loadImage("Posiciones/pos" + i + ".jpg");
@@ -123,6 +124,20 @@ void keyPressed() {
   if (key == ENTER) {loop();}
   if (key == ' '  && rond == -1) {
     if (time == 0) {time = millis();} else {time = 0;}
+  }
+}
+
+void mouseClicked() {
+  if(pose[0] >= mouseX-10 && pose[0] <= mouseX+10) {
+    if (pose[1] >= mouseY-10 && pose[1] <= mouseY+10) {
+      log.write(pose[2] + " x = " + pose[0] + " y = " + pose[1]);
+      pose[3]++;pose[0]=0;pose[1]=0;pose[2]=0;
+      if(pose[3]==5){
+        log.close();
+        log= new Log("/Posiciones/","Poses.txt",false);
+        pose[3]=0;
+      }
+    }
   }
 }
 
