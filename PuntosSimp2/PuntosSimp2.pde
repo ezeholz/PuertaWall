@@ -1,3 +1,5 @@
+// Pasar el string de lectura a int lectura
+
 import kinect4WinSDK.Kinect;
 import kinect4WinSDK.SkeletonData;
 ArrayList <SkeletonData> bodies;
@@ -10,15 +12,18 @@ Log log;
 
 PImage back;
 int rond = -1, time = 0, bod = 0;
-int[] pose={};
+int[] pose=new int[15];
 boolean next = false;
 
+void settings() {
+    size(1024, 768);
+    //fullScreen(2);
+}
+
 void setup() {
-  fullScreen(2);
-  //size(640, 480);
-  kinect = new Kinect(this);
+  //kinect = new Kinect(this);
   log= new Log("/Posiciones/","Poses.txt",false);  //Crea un nuevo log
-  smooth();
+  smooth(3);
   bodies = new ArrayList<SkeletonData>();
   
   ellipseMode(RADIUS);
@@ -31,13 +36,15 @@ void setup() {
   
   for(int i = 1; i < 3; i++) {
     bg[i] = loadImage("Posiciones/pos" + i + ".jpg");
-    bg[i].resize(width, height);
+    bg[i].resize(width, height); background(0,0,255);
   }
   //pose = randomizer();
-  //poses();
+  
+  poses();                        // Pruebas de coso
+  //while(true){poseunica();}
 }
 
-void draw() {
+void drawer() {
   if (rond != -1) {
     background(bg[rond]);
     image(kinect.GetMask(), 0, 0, width, height);
@@ -130,32 +137,32 @@ void keyPressed() {
 void mouseClicked() {
   if(pose[0] >= mouseX-10 && pose[0] <= mouseX+10) {
     if (pose[1] >= mouseY-10 && pose[1] <= mouseY+10) {
-      log.write(pose[2] + " x = " + pose[0] + " y = " + pose[1]);
+      log.write(pose[2] + "," + pose[0] + "," + pose[1] + ",");
       pose[3]++;pose[0]=0;pose[1]=0;pose[2]=0;
       if(pose[3]==5){
         log.close();
         log= new Log("/Posiciones/","Poses.txt",false);
         pose[3]=0;
+        time=0;
       }
     }
   }
 }
 
-String[] poses() {
-  //log.write("Kinect.NUI_SKELETON_POSITION_HEAD,width/2+20,height/4,30");
-  //log.close();
-  String[] file = loadStrings(sketchPath()+"/Posiciones/Poses.txt");
-  String[] file2={};
+int[] poses() {
+  String[] file = loadStrings(sketchPath()+"/Posiciones/Poses" +pose[rond]+ ".txt");
+  String[] file2=new String[15];
+  int[] rta=new int[15];
   for (int i=0; i < file.length; i++) {
-    file2=splitTokens(file[i],",");
-    //println(file[i]);
-    //log.write(file[i]);
+    if (file[0] != file[i]){
+      file[0] = file[0] + file[i];
+    }
   }
-  for (int i = 0 ; i < file2.length; i++) {
-    println(file2[i]);
-    log.write(file2[i]);
-  }log.close();
-  return file2;
+  file2=split(file[0],",");
+  for (int i=0;i<file2.length;i++) {
+    rta[i] = Integer.parseInt(file2[i]);
+  }
+  return rta;
 }
 
 int[] randomizer() {

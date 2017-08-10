@@ -64,13 +64,9 @@ void pose2() {
 void poseunica() {
   if (rond != 1) {back = bg[0]; rond = 1;}
   
-  String[] file = poses();
-  int[] pos1 = new int[10];
+  int[] pos1 = poses();
   
-  for (int i = 0 ; i <= file.length; i++) {
-    pos1[i] = Integer.parseInt(file[i]);
-  }
-  
+  // 0 3 6 9 12
   //pos1[0] = width/4*3; pos1[1] = height/4; //right hand
   //pos1[2] = width/4; pos1[3] = height/4; //left hand
   //pos1[4] = width/4; pos1[5] = height/4*3; //left foot
@@ -82,11 +78,11 @@ void poseunica() {
   for (int i=0; i<bodies.size (); i++) {
     SkeletonData _s = bodies.get(i);
     if (track(_s)) {
-      head = det(_s, Kinect.NUI_SKELETON_POSITION_HEAD, pos1[6], pos1[7], 30);
-      right = det(_s, Kinect.NUI_SKELETON_POSITION_HAND_RIGHT, pos1[0], pos1[1], 30);
-      left = det(_s, Kinect.NUI_SKELETON_POSITION_HAND_LEFT, pos1[2], pos1[3], 30);
-      foot = det(_s, Kinect.NUI_SKELETON_POSITION_FOOT_LEFT, pos1[4], pos1[5], 35);
-      knee = det(_s, Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT, pos1[8], pos1[9], 35);
+      head = det(_s, pos1[0], pos1[1], pos1[2], 30);
+      right = det(_s, pos1[3], pos1[4], pos1[5], 30);
+      left = det(_s, pos1[6], pos1[7], pos1[8], 30);
+      foot = det(_s, pos1[9], pos1[10], pos1[11], 30);
+      knee = det(_s, pos1[12], pos1[13], pos1[14], 30);
     }
   if (left) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[2], pos1[3], 30, 30);
   if (right) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[0], pos1[1], 30, 30);
@@ -134,7 +130,7 @@ void desarrollador() {
         //log.close();
       time = -1;
     }
-    if (time < 0) {
+    while (time < 0) {
     DrawPoints(points);
     }
   }
@@ -238,6 +234,7 @@ void DrawBone(SkeletonData _s, int _j1, int _j2)
 void DrawPoints(float[] points) {
   stroke(255,0,0);
   for(int one = 0; one<40; one = one + 2){
+    fill(255,0,0);
     ellipse(points[one],points[one+1],10,10);
     if (points[one] >= mouseX-10 && points[one] <= mouseX+10) {
       if (points[one+1] >= mouseY-10 && points[one+1] <= mouseY+10) {
@@ -264,6 +261,8 @@ void DrawPoints(float[] points) {
           case 36 : pose[2] = Kinect.NUI_SKELETON_POSITION_ANKLE_LEFT; break;
           case 38 : pose[2] = Kinect.NUI_SKELETON_POSITION_FOOT_LEFT; break;
         }
+        fill(0,255,0);
+        ellipse(points[one],points[one+1],10,10);
       }
     }
   }
