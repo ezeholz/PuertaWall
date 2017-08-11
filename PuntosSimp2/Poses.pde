@@ -84,11 +84,11 @@ void poseunica() {
       foot = det(_s, pos1[9], pos1[10], pos1[11], 30);
       knee = det(_s, pos1[12], pos1[13], pos1[14], 30);
     }
-  if (left) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[2], pos1[3], 30, 30);
-  if (right) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[0], pos1[1], 30, 30);
-  if (foot) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[4], pos1[5], 35, 35);
-  if (head) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[6], pos1[7], 30, 30);
-  if (knee) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[8], pos1[9], 35, 35);
+  if (left) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[1], pos1[2], 30, 30);
+  if (right) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[4], pos1[5], 30, 30);
+  if (foot) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[7], pos1[8], 30, 30);
+  if (head) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[10], pos1[11], 30, 30);
+  if (knee) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[13], pos1[14], 30, 30);
   if (left && right && foot && head && knee) {image(kinect.GetImage(), 0, 0, width, height); saveFrame("Ganadores/####.jpg");next = true; time=millis(); while(time >= millis()-5000){}; return;}
   }
 }

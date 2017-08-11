@@ -1,5 +1,3 @@
-// Pasar el string de lectura a int lectura
-
 import kinect4WinSDK.Kinect;
 import kinect4WinSDK.SkeletonData;
 ArrayList <SkeletonData> bodies;
@@ -44,7 +42,7 @@ void setup() {
   //while(true){poseunica();}
 }
 
-void drawer() {
+void draw() {
   if (rond != -1) {
     background(bg[rond]);
     image(kinect.GetMask(), 0, 0, width, height);
