@@ -67,11 +67,6 @@ void poseunica() {
   int[] pos1 = poses();
   
   // 0 3 6 9 12
-  //pos1[0] = width/4*3; pos1[1] = height/4; //right hand
-  //pos1[2] = width/4; pos1[3] = height/4; //left hand
-  //pos1[4] = width/4; pos1[5] = height/4*3; //left foot
-  //pos1[6] = width/2+20; pos1[7] = height/4; //head
-  //pos1[8] = width/2+20; pos1[9] = height/6*5; //knee
   
   boolean left = false, right = false, foot = false, head = false, knee = false;
   
@@ -95,6 +90,7 @@ void poseunica() {
 
 void desarrollador() {
   float[] points = new float[40];
+  PVector[] posc = new PVector[20];
   image(kinect.GetImage(), 0, 0, width, height);
   stroke(255);textSize(40);
   text(time,20,40);
@@ -122,22 +118,22 @@ void desarrollador() {
       points[34] = pos(_s ,Kinect.NUI_SKELETON_POSITION_KNEE_LEFT, 'x'); points[35] = pos(_s ,Kinect.NUI_SKELETON_POSITION_KNEE_LEFT, 'y');
       points[36] = pos(_s ,Kinect.NUI_SKELETON_POSITION_ANKLE_LEFT, 'x'); points[37] = pos(_s ,Kinect.NUI_SKELETON_POSITION_ANKLE_LEFT, 'y');
       points[38] = pos(_s ,Kinect.NUI_SKELETON_POSITION_FOOT_LEFT, 'x'); points[39] = pos(_s ,Kinect.NUI_SKELETON_POSITION_FOOT_LEFT, 'y');
-        //log.write(str(Kinect.NUI_SKELETON_POSITION_HEAD) + " x = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_HEAD, 'x') + " y = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_HEAD, 'y'));
-        //log.write(str(Kinect.NUI_SKELETON_POSITION_HAND_RIGHT) + " x = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_HAND_RIGHT, 'x') + " y = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_HAND_RIGHT, 'y'));
-        //log.write(str(Kinect.NUI_SKELETON_POSITION_HAND_LEFT) + " x = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_HAND_LEFT, 'x') + " y = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_HAND_LEFT, 'y'));
-        //log.write(str(Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT) + " x = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT, 'x') + " y = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT, 'y'));
-        //log.write(str(Kinect.NUI_SKELETON_POSITION_KNEE_LEFT) + " x = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_KNEE_LEFT, 'x') + " y = " + pos(_s ,Kinect.NUI_SKELETON_POSITION_KNEE_LEFT, 'y'));
-        //log.close();
+      saveFrame("Development/####.jpg");
+      for(int y = 0;y<20;y++){
+        posc[y] = _s.skeletonPositions[y].copy();
+      }
       time = -1;
     }
     while (time < 0) {
-    DrawPoints(points);
+      DrawPoints(points);
     }
   }
 }
 
 void drawSkeleton(SkeletonData _s) 
-{
+{ for(int i=0;i<19;i++) {
+    DrawBone(_s,i,i+1)
+  }
   // Body
   DrawBone(_s, 
   Kinect.NUI_SKELETON_POSITION_HEAD, 
@@ -263,6 +259,20 @@ void DrawPoints(float[] points) {
         }
         fill(0,255,0);
         ellipse(points[one],points[one+1],10,10);
+        if (mousePressed && mouseButton == LEFT) {
+          if(pose[0] >= mouseX-10 && pose[0] <= mouseX+10) {
+            if (pose[1] >= mouseY-10 && pose[1] <= mouseY+10) {
+              log.write(pose[2] + "," + pose[0] + "," + pose[1] + ",");
+              pose[3]++;pose[0]=0;pose[1]=0;pose[2]=0;
+              if(pose[3]==5){
+                log.close();
+                log= new Log("/Posiciones/","Poses.txt",false);
+                pose[3]=0;
+                time=0;
+              }
+            }
+          }
+        }
       }
     }
   }

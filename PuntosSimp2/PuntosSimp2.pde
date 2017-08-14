@@ -1,3 +1,12 @@
+/*
+#    Proyecto con la Kinect
+#          Puerta 18
+#
+#    Ezequiel G. Holzweissig
+#    
+#    www.puerta18.org.ar
+*/
+
 import kinect4WinSDK.Kinect;
 import kinect4WinSDK.SkeletonData;
 ArrayList <SkeletonData> bodies;
@@ -19,7 +28,7 @@ void settings() {
 }
 
 void setup() {
-  //kinect = new Kinect(this);
+  kinect = new Kinect(this);
   log= new Log("/Posiciones/","Poses.txt",false);  //Crea un nuevo log
   smooth(3);
   bodies = new ArrayList<SkeletonData>();
@@ -52,11 +61,6 @@ void draw() {
     case 0 : case 1 : pose1(); break;
     case 2 : pose2(); break;
   }
-  //for (int i=0; i<bodies.size (); i++) {
-  //  SkeletonData _s = bodies.get(i);
-  //  fill(0);
-  //  println("X = " + pos(_s, Kinect.NUI_SKELETON_POSITION_HAND_RIGHT, 'x') + " & Y = " + pos(_s, Kinect.NUI_SKELETON_POSITION_HAND_RIGHT, 'y'));
-  //}
 }
 
 void appearEvent(SkeletonData _s) 
@@ -126,24 +130,8 @@ boolean det(SkeletonData _s, int s, int x, int y, int d) {
 }
 
 void keyPressed() {
-  if (key == ENTER) {loop();}
   if (key == ' '  && rond == -1) {
     if (time == 0) {time = millis();} else {time = 0;}
-  }
-}
-
-void mouseClicked() {
-  if(pose[0] >= mouseX-10 && pose[0] <= mouseX+10) {
-    if (pose[1] >= mouseY-10 && pose[1] <= mouseY+10) {
-      log.write(pose[2] + "," + pose[0] + "," + pose[1] + ",");
-      pose[3]++;pose[0]=0;pose[1]=0;pose[2]=0;
-      if(pose[3]==5){
-        log.close();
-        log= new Log("/Posiciones/","Poses.txt",false);
-        pose[3]=0;
-        time=0;
-      }
-    }
   }
 }
 
