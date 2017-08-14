@@ -12,7 +12,7 @@ import kinect4WinSDK.SkeletonData;
 ArrayList <SkeletonData> bodies;
 
 PImage[] bg = new PImage[10];
-
+PVector[] posc = new PVector[20];
 
 Kinect kinect;
 Log log;
@@ -144,9 +144,13 @@ int[] poses() {
       file[0] = file[0] + file[i];
     }
   }
-  file2=split(file[0],",");
+  file2=split(file[0],":");
   for (int i=0;i<file2.length;i++) {
-    rta[i] = Integer.parseInt(file2[i]);
+    switch(i){
+    case 0:case 3:case 6:case 9:case 12:rta[i] = int(file2[i]); break;
+    case 1:case 4:case 7:case 10:case 13:rta[i] = (int)float(file2[i])*width;break;
+    case 2:case 5:case 8:case 11:case 14:rta[i] = (int)float(file2[i])*height;break;
+    }
   }
   return rta;
 }
