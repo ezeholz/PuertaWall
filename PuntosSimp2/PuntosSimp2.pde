@@ -11,16 +11,16 @@ import kinect4WinSDK.Kinect;
 import kinect4WinSDK.SkeletonData;
 ArrayList <SkeletonData> bodies;
 
-PImage[] bg = new PImage[10];
+PImage back;
 PVector[] posc = new PVector[20];
 
 Kinect kinect;
 Log log;
 
-PImage back;
+//PImage back;
 int rond = -1, time = 0, bod = 0;
 int[] pose=new int[15];
-boolean next = false;
+boolean next = true;
 
 void settings() {
     size(1024, 768);
@@ -35,32 +35,30 @@ void setup() {
   
   ellipseMode(RADIUS);
   
-  bg[0] = loadImage("Posiciones/posini.jpg");
-  bg[0].resize(width, height);
+  if (rond == -1){pose[1] = 0;}
+  back = bg("/Posiciones/posini.jpg");
   
-  back = bg[0];
-  if (rond == -1){pose[3] = 0;}
-  
-  for(int i = 1; i < 3; i++) {
-    bg[i] = loadImage("Posiciones/pos" + i + ".jpg");
-    bg[i].resize(width, height); background(0,0,255);
-  }
-  //pose = randomizer();
+  pose = randomizer();
   
   poses();                        // Pruebas de coso
-  //while(true){poseunica();}
 }
 
 void draw() {
   if (rond != -1) {
-    background(bg[rond]);
+    background(back);
     image(kinect.GetMask(), 0, 0, width, height);
   } else {background(0);}
   switch (rond) {
     case -1 : desarrollador(); break;
-    case 0 : case 1 : pose1(); break;
+    case 1 : pose1(); break;
     case 2 : pose2(); break;
   }
+}
+
+PImage bg(String a) {
+  PImage rta = loadImage(a);
+  rta.resize(width,height);
+  return rta;
 }
 
 void appearEvent(SkeletonData _s) 
