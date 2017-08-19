@@ -7,6 +7,7 @@
 #    www.puerta18.org.ar
 */
 
+import processing.opengl.*;
 import kinect4WinSDK.Kinect;
 import kinect4WinSDK.SkeletonData;
 ArrayList <SkeletonData> bodies;
@@ -18,12 +19,12 @@ Kinect kinect;
 Log log;
 
 //PImage back;
-int rond = -1, time = 0, bod = 0;
+int rond = 3, time = 2, bod = 0;
 int[] pose=new int[15];
 boolean next = true;
 
 void settings() {
-    size(1024, 768);
+    size(1024, 768, OPENGL);
     //fullScreen(2);
 }
 
@@ -40,18 +41,19 @@ void setup() {
   
   pose = randomizer();
   
-  poses();                        // Pruebas de coso
+  //poses();                        // Pruebas de coso
 }
 
 void draw() {
   if (rond != -1) {
     background(back);
     image(kinect.GetMask(), 0, 0, width, height);
-  } else {background(0);}
+  } else if (time != -1) {background(0);}
   switch (rond) {
     case -1 : desarrollador(); break;
     case 1 : pose1(); break;
     case 2 : pose2(); break;
+    case 3 : poseunica(); break;
   }
 }
 
@@ -134,9 +136,10 @@ void keyPressed() {
 }
 
 int[] poses() {
-  String[] file = loadStrings(sketchPath()+"/Posiciones/Poses" +pose[rond]+ ".txt");
+  String[] file = loadStrings(sketchPath()+"/Posiciones/Poses" +time/*pose[rond]*/+ ".txt");
   String[] file2=new String[15];
   int[] rta=new int[15];
+  float[] floats=new float[16];
   for (int i=0; i < file.length; i++) {
     if (file[0] != file[i]){
       file[0] = file[0] + file[i];
@@ -144,10 +147,13 @@ int[] poses() {
   }
   file2=split(file[0],":");
   for (int i=0;i<file2.length;i++) {
+      floats[i] = float(file2[i]);
+  }
+  for (int i=0;i<floats.length;i++) {
     switch(i){
     case 0:case 3:case 6:case 9:case 12:rta[i] = int(file2[i]); break;
-    case 1:case 4:case 7:case 10:case 13:rta[i] = (int)float(file2[i])*width;break;
-    case 2:case 5:case 8:case 11:case 14:rta[i] = (int)float(file2[i])*height;break;
+    case 1:case 4:case 7:case 10:case 13:rta[i] = int(floats[i]*width);break;
+    case 2:case 5:case 8:case 11:case 14:rta[i] = int(floats[i]*height);break;
     }
   }
   return rta;

@@ -63,9 +63,11 @@ void pose2() {
 
 
 void poseunica() {
-  if (next) {back = bg("/Posiciones/pos" + pose[rond] + ".jpg");next = false;}
+  //if (next) {back = bg("/Posiciones/pos" + pose[rond] + ".jpg");next = false;}
+  if (next) {back = bg("/Development/0726.jpg");next = false;}
   
   int[] pos1 = poses();
+  println(pos1);
   
   // 0 3 6 9 12
   
@@ -213,209 +215,22 @@ void DrawPoints(PVector[] vector) {
     ellipse(points[0],points[1],10,10);
     if (points[0] >= mouseX-10 && points[0] <= mouseX+10) {
       if (points[1] >= mouseY-10 && points[1] <= mouseY+10) {
-        switch(one) {
-          case 0 : pose[0] = Kinect.NUI_SKELETON_POSITION_HEAD; break;
-          case 1 : pose[0] = Kinect.NUI_SKELETON_POSITION_SHOULDER_CENTER; break;
-          case 2 : pose[0] = Kinect.NUI_SKELETON_POSITION_SPINE; break;
-          case 3 : pose[0] = Kinect.NUI_SKELETON_POSITION_HIP_CENTER; break;
-          case 4 : pose[0] = Kinect.NUI_SKELETON_POSITION_SHOULDER_RIGHT; break;
-          case 5 : pose[0] = Kinect.NUI_SKELETON_POSITION_ELBOW_RIGHT; break;
-          case 6 : pose[0] = Kinect.NUI_SKELETON_POSITION_WRIST_RIGHT; break;
-          case 7 : pose[0] = Kinect.NUI_SKELETON_POSITION_HAND_RIGHT; break;
-          case 8 : pose[0] = Kinect.NUI_SKELETON_POSITION_SHOULDER_LEFT; break;
-          case 9 : pose[0] = Kinect.NUI_SKELETON_POSITION_ELBOW_LEFT; break;
-          case 10 : pose[0] = Kinect.NUI_SKELETON_POSITION_WRIST_LEFT; break;
-          case 11 : pose[0] = Kinect.NUI_SKELETON_POSITION_HAND_LEFT; break;
-          case 12 : pose[0] = Kinect.NUI_SKELETON_POSITION_HIP_RIGHT; break;
-          case 13 : pose[0] = Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT; break;
-          case 14 : pose[0] = Kinect.NUI_SKELETON_POSITION_ANKLE_RIGHT; break;
-          case 15 : pose[0] = Kinect.NUI_SKELETON_POSITION_FOOT_RIGHT; break;
-          case 16 : pose[0] = Kinect.NUI_SKELETON_POSITION_HIP_LEFT; break;
-          case 17 : pose[0] = Kinect.NUI_SKELETON_POSITION_KNEE_LEFT; break;
-          case 18 : pose[0] = Kinect.NUI_SKELETON_POSITION_ANKLE_LEFT; break;
-          case 19 : pose[0] = Kinect.NUI_SKELETON_POSITION_FOOT_LEFT; break;
-        }
+        pose[0] = one;
         fill(0,255,0);
         ellipse(points[0],points[1],10,10);
         if (mousePressed && mouseButton == LEFT) {
-          log.write(pose[0] + ":" + vector[one].x + ":" + vector[one].y + ":");
-          pose[0]=0;pose[1]++;
-          if(pose[1]==5){
-            log.close();
-            log= new Log("/Posiciones/","Poses.txt",false);
-            pose[1]=0;
-            time=0;
+            if (pose[2] != pose[0]) {
+            log.write(pose[0] + ":" + vector[one].x + ":" + vector[one].y + ":");
+            pose[2] = pose[0];pose[0]=0;pose[1] = pose [1] + 1;
+            if(pose[1]==5){
+              log.close();
+              log= new Log("/Posiciones/","Poses.txt",false);
+              pose[1]=0;
+              time=0;
+            }
           }
         }
       }
     }
   }
-}/*
-#    Proyecto con la Kinect
-#          Puerta 18
-#
-#    Ezequiel G. Holzweissig
-#    
-#    www.puerta18.org.ar
-*/
-
-import kinect4WinSDK.Kinect;
-import kinect4WinSDK.SkeletonData;
-ArrayList <SkeletonData> bodies;
-
-PImage back;
-PVector[] posc = new PVector[20];
-
-Kinect kinect;
-Log log;
-
-//PImage back;
-int rond = -1, time = 0, bod = 0;
-int[] pose=new int[15];
-boolean next = true;
-
-void settings() {
-    size(1024, 768);
-    //fullScreen(2);
-}
-
-void setup() {
-  kinect = new Kinect(this);
-  log= new Log("/Posiciones/","Poses.txt",false);  //Crea un nuevo log
-  smooth(3);
-  bodies = new ArrayList<SkeletonData>();
-  
-  ellipseMode(RADIUS);
-  
-  if (rond == -1){pose[1] = 0;}
-  back = bg("/Posiciones/posini.jpg");
-  
-  pose = randomizer();
-  
-  poses();                        // Pruebas de coso
-}
-
-void draw() {
-  if (rond != -1) {
-    background(back);
-    image(kinect.GetMask(), 0, 0, width, height);
-  } else {background(0);}
-  switch (rond) {
-    case -1 : desarrollador(); break;
-    case 1 : pose1(); break;
-    case 2 : pose2(); break;
-  }
-}
-
-PImage bg(String a) {
-  PImage rta = loadImage(a);
-  rta.resize(width,height);
-  return rta;
-}
-
-void appearEvent(SkeletonData _s) 
-{if (bod == 0){
-  if (_s.trackingState == Kinect.NUI_SKELETON_NOT_TRACKED) 
-  {
-    return;
-  }
-  synchronized(bodies) {
-    bodies.add(_s);
-    bod = _s.dwTrackingID;
-  }
-}}
-
-void disappearEvent(SkeletonData _s) 
-{if (bod != 0){
-  synchronized(bodies) {
-    for (int i=bodies.size ()-1; i>=0; i--) 
-    {
-      if (_s.dwTrackingID == bodies.get(i).dwTrackingID || 0 == bodies.get(i).dwTrackingID) 
-      {
-        bodies.remove(i);
-        bod = 0;
-      }
-    }
-  }
-}}
-
-void moveEvent(SkeletonData _b, SkeletonData _a)
-{
-  if (_a.trackingState == Kinect.NUI_SKELETON_NOT_TRACKED) 
-  {
-    return;
-  }
-  synchronized(bodies) {
-    for (int i=bodies.size ()-1; i>=0; i--) 
-    {
-      if (_b.dwTrackingID == bodies.get(i).dwTrackingID) 
-      {
-        bodies.get(i).copy(_a);
-        break;
-      }
-    }
-  }
-}
-
-boolean track(SkeletonData _s) {
-  int b = Kinect.NUI_SKELETON_POSITION_HEAD;
-  if (_s.skeletonPositionTrackingState[b] != Kinect.NUI_SKELETON_POSITION_NOT_TRACKED) {return true;} else {return false;}
-}
-
-float pos(SkeletonData _s, int b, char c) {
-  //a = "Kinect.NUI_SKELETON_POSITION_" + a;
-  //int b = a.substring(0);
-  if (c == 'x') {return _s.skeletonPositions[b].x*width;}
-  if (c == 'y') {return _s.skeletonPositions[b].y*height;}
-  if (c == 'z') {return _s.skeletonPositions[b].z*-8000;}
-  else return Kinect.NUI_SKELETON_POSITION_NOT_TRACKED;
-}
-
-boolean det(SkeletonData _s, int s, int x, int y, int d) {
-  if (pos(_s, s, 'x') >= x-d && pos(_s, s, 'x') <= x+d) {
-        if (pos(_s, s, 'y') >= y-d && pos(_s, s, 'y') <= y+d) {
-          return true;
-        } else {return false;}
-      } else {return false;}
-}
-
-void keyPressed() {
-  if (key == ' '  && rond == -1) {
-    if (time == 0) {time = millis();} else {time = 0;}
-  }
-}
-
-int[] poses() {
-  String[] file = loadStrings(sketchPath()+"/Posiciones/Poses" +pose[rond]+ ".txt");
-  String[] file2=new String[15];
-  int[] rta=new int[15];
-  for (int i=0; i < file.length; i++) {
-    if (file[0] != file[i]){
-      file[0] = file[0] + file[i];
-    }
-  }
-  file2=split(file[0],":");
-  for (int i=0;i<file2.length;i++) {
-    switch(i){
-    case 0:case 3:case 6:case 9:case 12:rta[i] = int(file2[i]); break;
-    case 1:case 4:case 7:case 10:case 13:rta[i] = (int)float(file2[i])*width;break;
-    case 2:case 5:case 8:case 11:case 14:rta[i] = (int)float(file2[i])*height;break;
-    }
-  }
-  return rta;
-}
-
-int[] randomizer() {
-  randomSeed(hour()*10000+minute()*100+second());
-  int num=0,id=log.id;
-  int[] rounds = new int[3];
-  while(num!=3){
-    int next = (int)random(id + 1);
-    boolean yes = true;
-    for(int x = 0;x < num;x++) {
-      if(next == rounds[x]) {yes=false;x=num + 1;}
-    }
-    if(yes){rounds[num]=next;num++;}
-  }
-  return rounds;
 }
