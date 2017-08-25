@@ -1,73 +1,65 @@
-//Inicia clase Log
 class Log {
-  private PrintWriter output;  //Permite la creacion de archivos
-  private String path=sketchPath();  //Variable para guardar ruta de archivo 
-  private String fileName;  //Variable para el nombre del archivo
-  private int id=1;  //id del archivo, se usa para renombrar
+  private PrintWriter output;
+  private String path=sketchPath();
+  private String fileName;
+  private int id=1;
  
-  //Constructor de la clase
   Log(String pth,String fileName, boolean overwrite) {
     path = path+pth;
-    this.fileName=fileName;  //Asigamos nombre del archivo
-    if (exist(this.fileName) && !overwrite) {  //comprobamos si ya existe el nombre del archivo con la funcion exist()
-      rename();  //Si es verdadero se llama a la funcion rename()
+    this.fileName=fileName;
+    if (exist(this.fileName) && !overwrite) {
+      rename();
       output= createWriter(path+this.fileName);
     }
     else {
-      output= createWriter(path+this.fileName); //Si no existe, se crea sin renombrar
+      output= createWriter(path+this.fileName);
     }
   }
  
-  //Crea una lista de los archivos existentes en el directorio actual
-  private String[] listFileNames(String dir) {  //recibe como parametro la ruta actual
-    File file = new File(dir);  //Crea un objeto de la clase File
-    if (file.isDirectory()) {  //Comprobamos que sea un directorio y no un archivo
-      String names[] = file.list();  //Cargamos la lista de archivos en el vector names[]
-      return names;  //regresamos names[]
+  private String[] listFileNames(String dir) {
+    File file = new File(dir);
+    if (file.isDirectory()) {
+      String names[] = file.list();
+      return names;
     } 
     else {
-      return null;  //En caso de que sea un archivo se regresa null
+      return null;
     }
   }
  
-  //Comprueba si el archivo ya existe
-  private boolean exist(String fileName) {  //recibe como parametro el nombre del archivo
-    String[] filenames = listFileNames(path);  //llama a la funcion listFileNames para obtener la lista de archivos
-    for (int x=0; x<=filenames.length-1;x++) {  //Se comprueba por medio de un for la existencia del archivo, recorre todo el vector
-      if (fileName.equals(filenames[x])) {  //Si el nombre de un archivo existente coincide con el que se propuso
-        return true;  //Regresa verdadero
+  private boolean exist(String fileName) {
+    String[] filenames = listFileNames(path);
+    for (int x=0; x<=filenames.length-1;x++) {
+      if (fileName.equals(filenames[x])) {
+        return true;
       }
     }
-    return false;  //Regresa falso
+    return false;
   }
   
-  //Renombra el archivo para no sobreescribir
   private void rename() {
-    String newName=(split(fileName, ".")[0]+str(id)+"."+split(fileName, ".")[1]); //Al nombre original se le asigna un indicador haciendo uso del id
-    if (exist(newName)) {  //Se comprueba si archivo con el nuevo nombre existe
-      id++;  //Se incrementa id hasta que se encuentra un archivo inexistente
-      rename();  //Es recursiva en caso de que siga exisitiendo el nombre
+    String newName=(split(fileName, ".")[0]+str(id)+"."+split(fileName, ".")[1]);
+    if (exist(newName)) {
+      id++;
+      rename();
     }
     else {
-      fileName=newName;  //Se regresa el nuevo nombre
+      fileName=newName;
       return;
     }
   }
   
-  //Cierra el archivo, para que sea utilizable
   public void close() {
-    output.flush();  //Vaciamos buffer de escritura
-    output.close();  //Cerramos el archivo
+    output.flush();
+    output.close();
   }
  
-  //Escribe datos nuevos
   public void write(String data) {
-    output.println(data);  //Concatena los datos nuevos y asigna fin de linea
+    output.println(data);
   }
   
-  //Regresa el nombre final del archivo
   public String getName(){
      return fileName;
   }
   
-}//Termina clase
+}

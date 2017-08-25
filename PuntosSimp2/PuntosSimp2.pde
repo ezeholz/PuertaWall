@@ -19,13 +19,13 @@ Kinect kinect;
 Log log;
 
 //PImage back;
-int rond = 3, time = 2, bod = 0;
+int rond = 0, time = 0, bod = 0;
 int[] pose=new int[15];
 boolean next = true;
 
 void settings() {
     size(1024, 768, OPENGL);
-    //fullScreen(2);
+    //fullScreen(OPENGL, 2);
 }
 
 void setup() {
@@ -51,9 +51,8 @@ void draw() {
   } else if (time != -1) {background(0);}
   switch (rond) {
     case -1 : desarrollador(); break;
-    case 1 : pose1(); break;
-    case 2 : pose2(); break;
-    case 3 : poseunica(); break;
+    case 0 : calibracion(); break;
+    default : poseunica(); break;
   }
 }
 

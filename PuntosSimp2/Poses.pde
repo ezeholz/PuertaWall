@@ -1,70 +1,10 @@
-void pose1() {
-  if (next) {back = bg("/Posiciones/pos1.jpg");next = false;}
-  
-  int[] pos1 = new int[10];
-  
-  pos1[0] = width/4*3; pos1[1] = height/4; //right hand
-  pos1[2] = width/4; pos1[3] = height/4; //left hand
-  pos1[4] = width/4; pos1[5] = height/4*3; //left foot
-  pos1[6] = width/2+20; pos1[7] = height/4; //head
-  pos1[8] = width/2+20; pos1[9] = height/6*5; //knee
-  
-  boolean left = false, right = false, foot = false, head = false, knee = false;
-  
-  for (int i=0; i<bodies.size (); i++) {
-    SkeletonData _s = bodies.get(i);
-    if (track(_s)) {
-      head = det(_s, Kinect.NUI_SKELETON_POSITION_HEAD, pos1[6], pos1[7], 30);
-      right = det(_s, Kinect.NUI_SKELETON_POSITION_HAND_RIGHT, pos1[0], pos1[1], 30);
-      left = det(_s, Kinect.NUI_SKELETON_POSITION_HAND_LEFT, pos1[2], pos1[3], 30);
-      foot = det(_s, Kinect.NUI_SKELETON_POSITION_FOOT_LEFT, pos1[4], pos1[5], 35);
-      knee = det(_s, Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT, pos1[8], pos1[9], 35);
-    }
-  if (left) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[2], pos1[3], 30, 30);
-  if (right) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[0], pos1[1], 30, 30);
-  if (foot) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[4], pos1[5], 35, 35);
-  if (head) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[6], pos1[7], 30, 30);
-  if (knee) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[8], pos1[9], 35, 35);
-  if (left && right && foot && head && knee) {image(kinect.GetImage(), 0, 0, width, height); saveFrame("Ganadores/####.jpg");next = true; rond++; time=millis(); while(time >= millis()-5000){}; return;}
-  }
+void calibracion() {
+
 }
-
-void pose2() {
-  if (next) {back = bg("/Posiciones/pos2.jpg");next = false;}
-  
-  int[] pos1 = new int[10];
-  
-  pos1[0] = width/2+70; pos1[1] = height/16; //right hand
-  pos1[2] = width/2-50; pos1[3] = height/16; //left hand
-  pos1[4] = width/2+20; pos1[5] = height/4; //head
-  pos1[6] = width/2-50; pos1[7] = height/6*5+10; //left knee
-  pos1[8] = width/2+70; pos1[9] = height/6*5+10; //right knee
-  
-  boolean lefth = false, righth = false, leftk = false, head = false, rightk = false;
-  
-  for (int i=0; i<bodies.size (); i++) {
-    SkeletonData _s = bodies.get(i);
-    if (track(_s)) {
-      head = det(_s, Kinect.NUI_SKELETON_POSITION_HEAD, pos1[4], pos1[5], 30);
-      righth = det(_s, Kinect.NUI_SKELETON_POSITION_HAND_RIGHT, pos1[0], pos1[1], 30);
-      lefth = det(_s, Kinect.NUI_SKELETON_POSITION_HAND_LEFT, pos1[2], pos1[3], 30);
-      leftk = det(_s, Kinect.NUI_SKELETON_POSITION_KNEE_LEFT, pos1[6], pos1[7], 35);
-      rightk = det(_s, Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT, pos1[8], pos1[9], 35);
-    }
-  if (lefth) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[2], pos1[3], 60, 60);
-  if (righth) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[0], pos1[1], 60, 60);
-  if (head) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[4], pos1[5], 60, 60);
-  if (leftk) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[6], pos1[7], 70, 70);
-  if (rightk) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[8], pos1[9], 70, 70);
-  if (lefth && righth && head && leftk && rightk) {image(kinect.GetImage(), 0, 0, width, height); saveFrame("Ganadores/####.jpg"); next=true; rond++; time=millis(); while(time >= millis()-5000){}; return;}
-  }
-}
-
-
 
 void poseunica() {
   //if (next) {back = bg("/Posiciones/pos" + pose[rond] + ".jpg");next = false;}
-  if (next) {back = bg("/Development/0726.jpg");next = false;}
+  if (next) {back = bg("/Development/0686.jpg");next = false;}
   
   int[] pos1 = poses();
   println(pos1);
