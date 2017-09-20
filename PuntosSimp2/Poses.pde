@@ -1,8 +1,8 @@
 void calibracion() {
   for (int i=0; i<bodies.size(); i++) {
     texto();
-    if (sec == sec2 && !next) {rond = 1; sec = 10; sec2 = 0; next=true;}
-    else if (sec == sec2 && next) {rond = -1;}
+    if (sec == sec2 && !next) {time = 0; rond = 1; sec = 10; sec2 = 0; next=true;}
+    else if (sec == sec2 && next) {time = 0; rond = -1;}
     conteo();
   }
 }
@@ -174,8 +174,8 @@ void DrawPoints(PVector[] vector) {
         if (mousePressed && mouseButton == LEFT) {
             if (pose[2] != pose[0]) {
             escr[pose[1]] = pose[0] + ":" + vector[one].x + ":" + vector[one].y + ":";
-            pose[2] = pose[0];pose[0]=0;pose[1] = pose [1]++;
-            if(pose[1]==5){
+            pose[2] = pose[0];pose[0]=0;pose [1]++;
+            if(pose[1]>=5){
               log= new Log("/Posiciones/","Poses.txt",false, true);
               pos.save("Posiciones/pos"+ log.id +".jpg");
               for (int i=0; i<5; i++) {

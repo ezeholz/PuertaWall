@@ -72,7 +72,7 @@ void texto() {
 }
 
 void conteo() {
-  if (bod != 0) {time = millis();} else {time = 0;}
+  if (bod != 0 && time == 0) {time = millis();} else if (bod == 0) {time = 0;}
   if (time != 0) {
     if (time+1000*sec2+1000 <= millis() && sec2<sec) {sec2++;} else if (sec2 == sec) {sec2=0;}
     textSize(72);

@@ -24,7 +24,7 @@ PGraphics pos;
 String[] escr = new String[5];
 int rond = 0, time = 0, bod = 0, sec = 5, sec2 = 0;
 int[] pose=new int[totalrond + 1];
-boolean next = false;
+boolean next = true;
 
 void settings() {
     size(1024, 768, OPENGL);
@@ -43,7 +43,7 @@ void setup() {
   back = bg("/Posiciones/posini.jpg");
   background(back);
   
-  thread("randomizer");
+//  thread("randomizer");
   
   pos = createGraphics(width, height);
 }
