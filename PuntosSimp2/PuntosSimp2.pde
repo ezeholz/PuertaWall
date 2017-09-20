@@ -18,10 +18,13 @@ PVector[] posc = new PVector[20];
 Kinect kinect;
 Log log;
 
-//PImage back;
-int rond = 0, time = 0, bod = 0;
-int[] pose=new int[15];
-boolean next = true;
+final int totalrond = 3;
+
+PGraphics pos;
+String[] escr = new String[5];
+int rond = 0, time = 0, bod = 0, sec = 5, sec2 = 0;
+int[] pose=new int[totalrond + 1];
+boolean next = false;
 
 void settings() {
     size(1024, 768, OPENGL);
@@ -30,7 +33,7 @@ void settings() {
 
 void setup() {
   kinect = new Kinect(this);
-  log= new Log("/Posiciones/","Poses.txt",false);  //Crea un nuevo log
+  log= new Log("/Posiciones/","Poses.txt",false, false);
   smooth(3);
   bodies = new ArrayList<SkeletonData>();
   
@@ -38,10 +41,11 @@ void setup() {
   
   if (rond == -1){pose[1] = 0;}
   back = bg("/Posiciones/posini.jpg");
+  background(back);
   
-  pose = randomizer();
+  thread("randomizer");
   
-  //poses();                        // Pruebas de coso
+  pos = createGraphics(width, height);
 }
 
 void draw() {
@@ -131,11 +135,18 @@ boolean det(SkeletonData _s, int s, int x, int y, int d) {
 void keyPressed() {
   if (key == ' '  && rond == -1) {
     if (time == 0) {time = millis();} else {time = 0;}
+  } else 
+  if (key=='*' && rond == -1 && time == -1) {
+    pose[1]=0;
+    escr = new String[5];
+    pos = createGraphics(width, height);
+    time=0;
+    rond=0;
   }
 }
 
 int[] poses() {
-  String[] file = loadStrings(sketchPath()+"/Posiciones/Poses" +time/*pose[rond]*/+ ".txt");
+  String[] file = loadStrings(sketchPath()+"/Posiciones/Poses" +pose[rond]+ ".txt");
   String[] file2=new String[15];
   int[] rta=new int[15];
   float[] floats=new float[16];
@@ -158,17 +169,18 @@ int[] poses() {
   return rta;
 }
 
-int[] randomizer() {
+void randomizer() {
   randomSeed(hour()*10000+minute()*100+second());
-  int num=0,id=log.id;
-  int[] rounds = new int[3];
-  while(num!=3){
+  int num=1,id=log.id;
+  int[] rounds = new int[totalrond+1];
+  rounds[0] = 0;
+  while(num!=totalrond){
     int next = (int)random(id + 1);
     boolean yes = true;
     for(int x = 0;x < num;x++) {
-      if(next == rounds[x]) {yes=false;x=num + 1;}
+      if(next == rounds[x]) {yes=false; x=num + 1;}
     }
     if(yes){rounds[num]=next;num++;}
   }
-  return rounds;
+  pose = rounds;
 }

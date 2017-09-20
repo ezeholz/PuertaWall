@@ -4,15 +4,15 @@ class Log {
   private String fileName;
   private int id=1;
  
-  Log(String pth,String fileName, boolean overwrite) {
+  Log(String pth,String fileName, boolean overwrite, boolean create) {
     path = path+pth;
     this.fileName=fileName;
     if (exist(this.fileName) && !overwrite) {
       rename();
-      output= createWriter(path+this.fileName);
+      if (create) {output= createWriter(path+this.fileName);}
     }
     else {
-      output= createWriter(path+this.fileName);
+      if (create) {output= createWriter(path+this.fileName);}
     }
   }
  
@@ -62,4 +62,28 @@ class Log {
      return fileName;
   }
   
+}
+
+void texto() {
+  textSize(20);
+  textAlign(CENTER, BOTTOM);
+  if (bod == 0) {fill(255,0,0); text("NO ESTA TRACKEANDO", width/2, height);}
+  else {fill(0,255,0); text("TRACKEANDO", width/2, height);}
+}
+
+void conteo() {
+  if (bod != 0) {time = millis();} else {time = 0;}
+  if (time != 0) {
+    if (time+1000*sec2+1000 <= millis() && sec2<sec) {sec2++;} else if (sec2 == sec) {sec2=0;}
+    textSize(72);
+    textAlign(CENTER, CENTER);
+    if (bod != 0 && millis() >= time+1000*sec2) {text(sec-sec2,width/2,height/2);}
+  } else {textSize(72);textAlign(CENTER, CENTER);text(sec-sec2+1,width/2,height/2);}
+}
+
+void savepos() {
+  pos.beginDraw();
+  pos.background(255);
+  pos.image(kinect.GetMask(), 0, 0, width, height);
+  pos.endDraw();
 }

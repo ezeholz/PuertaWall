@@ -1,33 +1,44 @@
 void calibracion() {
-
+  for (int i=0; i<bodies.size(); i++) {
+    texto();
+    if (sec == sec2 && !next) {rond = 1; sec = 10; sec2 = 0; next=true;}
+    else if (sec == sec2 && next) {rond = -1;}
+    conteo();
+  }
 }
 
 void poseunica() {
-  //if (next) {back = bg("/Posiciones/pos" + pose[rond] + ".jpg");next = false;}
-  if (next) {back = bg("/Development/0686.jpg");next = false;}
+  if (next) {back = bg("/Posiciones/pos" + pose[rond] + ".jpg");next = false;}
   
   int[] pos1 = poses();
-  println(pos1);
   
   // 0 3 6 9 12
   
-  boolean left = false, right = false, foot = false, head = false, knee = false;
+  boolean one = false, two = false, three = false, four = false, five = false;
   
   for (int i=0; i<bodies.size (); i++) {
     SkeletonData _s = bodies.get(i);
     if (track(_s)) {
-      head = det(_s, pos1[0], pos1[1], pos1[2], 30);
-      right = det(_s, pos1[3], pos1[4], pos1[5], 30);
-      left = det(_s, pos1[6], pos1[7], pos1[8], 30);
-      foot = det(_s, pos1[9], pos1[10], pos1[11], 30);
-      knee = det(_s, pos1[12], pos1[13], pos1[14], 30);
+      one = det(_s, pos1[0], pos1[1], pos1[2], 30);
+      two = det(_s, pos1[3], pos1[4], pos1[5], 30);
+      three = det(_s, pos1[6], pos1[7], pos1[8], 30);
+      four = det(_s, pos1[9], pos1[10], pos1[11], 30);
+      five = det(_s, pos1[12], pos1[13], pos1[14], 30);
     }
-  if (left) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[1], pos1[2], 30, 30);
-  if (right) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[4], pos1[5], 30, 30);
-  if (foot) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[7], pos1[8], 30, 30);
-  if (head) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[10], pos1[11], 30, 30);
-  if (knee) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[13], pos1[14], 30, 30);
-  if (left && right && foot && head && knee) {image(kinect.GetImage(), 0, 0, width, height); saveFrame("Ganadores/####.jpg");next = true; rond++; time=millis(); while(time >= millis()-5000){}; return;}
+  if (one) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[1], pos1[2], 30, 30);
+  if (two) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[4], pos1[5], 30, 30);
+  if (three) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[7], pos1[8], 30, 30);
+  if (four) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[10], pos1[11], 30, 30);
+  if (five) {fill(0,255,0);} else {fill(255,0,0);} ellipse(pos1[13], pos1[14], 30, 30);
+  if (one && two && three && four && five) {
+    image(kinect.GetImage(), 0, 0, width, height);
+    saveFrame("Ganadores/####.jpg");
+    next = true;
+    rond++;
+    time=millis();
+    while(time >= millis()-5000){};
+    return;
+    }
   }
 }
 
@@ -37,17 +48,19 @@ void desarrollador() {
     return;
   }
   image(kinect.GetImage(), 0, 0, width, height);
-  stroke(255);textSize(40);
+  stroke(255); textSize(40);
   text(time,20,40);
   for (int i=0; i<bodies.size (); i++) {
     SkeletonData _s = bodies.get(i);
     drawSkeleton(_s);
-    if (time <= millis()-5000  && _s.dwTrackingID == bod && time > 0) {
-      saveFrame("Development/####.jpg");
+    while (time <= millis()-5000  && _s.dwTrackingID == bod && time > 0) {
+      thread("savepos");
+      //save("Posiciones/pos"+ log.id +".jpg");
       for(int y = 0;y<20;y++){
         posc[y] = _s.skeletonPositions[y].copy();
       }
       time = -1;
+      return;
     }
   }
 }
@@ -160,13 +173,20 @@ void DrawPoints(PVector[] vector) {
         ellipse(points[0],points[1],10,10);
         if (mousePressed && mouseButton == LEFT) {
             if (pose[2] != pose[0]) {
-            log.write(pose[0] + ":" + vector[one].x + ":" + vector[one].y + ":");
-            pose[2] = pose[0];pose[0]=0;pose[1] = pose [1] + 1;
+            escr[pose[1]] = pose[0] + ":" + vector[one].x + ":" + vector[one].y + ":";
+            pose[2] = pose[0];pose[0]=0;pose[1] = pose [1]++;
             if(pose[1]==5){
+              log= new Log("/Posiciones/","Poses.txt",false, true);
+              pos.save("Posiciones/pos"+ log.id +".jpg");
+              for (int i=0; i<5; i++) {
+                log.write(escr[i]);
+              }
               log.close();
-              log= new Log("/Posiciones/","Poses.txt",false);
               pose[1]=0;
+              escr = new String[5];
+              pos = createGraphics(width, height);
               time=0;
+              rond=0;
             }
           }
         }
