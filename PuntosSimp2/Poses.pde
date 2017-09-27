@@ -1,8 +1,14 @@
 void calibracion() {
   for (int i=0; i<bodies.size(); i++) {
     texto();
-    if (sec == sec2 && !next) {time = 0; rond = 1; sec = 10; sec2 = 0; next=true;}
-    else if (sec == sec2 && next) {time = 0; rond = -1;}
+    if (sec == sec2 && !next) {
+      time = 0; 
+      rond = 1;
+      sec = 10;
+      sec2 = 0;
+      next=true; 
+      escr = new String[5];
+    } else if (sec == sec2 && next) {pose[1] = 0; time = 0; rond = -1;}
     conteo();
   }
 }
@@ -34,7 +40,7 @@ void poseunica() {
     image(kinect.GetImage(), 0, 0, width, height);
     saveFrame("Ganadores/####.jpg");
     next = true;
-    rond++;
+    if (rond != totalrond) {rond++;} else {rond = 0; next = true;}
     time=millis();
     while(time >= millis()-5000){};
     return;
@@ -168,25 +174,30 @@ void DrawPoints(PVector[] vector) {
     ellipse(points[0],points[1],10,10);
     if (points[0] >= mouseX-10 && points[0] <= mouseX+10) {
       if (points[1] >= mouseY-10 && points[1] <= mouseY+10) {
-        pose[0] = one;
         fill(0,255,0);
         ellipse(points[0],points[1],10,10);
         if (mousePressed && mouseButton == LEFT) {
-            if (pose[2] != pose[0]) {
-            escr[pose[1]] = pose[0] + ":" + vector[one].x + ":" + vector[one].y + ":";
-            pose[2] = pose[0];pose[0]=0;pose [1]++;
+            if (pose[2] != one) {
+            for (int h = 0; h < 5; h++) {
+              if (escr[h] != null) {} else {
+                escr[h] = one + ":" + vector[one].x + ":" + vector[one].y + ":"; pose[1]++; h = 6;
+              }
+            }
+            pose[2] = one;
             if(pose[1]>=5){
+              println(escr);
               log= new Log("/Posiciones/","Poses.txt",false, true);
               pos.save("Posiciones/pos"+ log.id +".jpg");
               for (int i=0; i<5; i++) {
                 log.write(escr[i]);
               }
               log.close();
-              pose[1]=0;
-              escr = new String[5];
+              pose=new int[totalrond + 1];
               pos = createGraphics(width, height);
               time=0;
               rond=0;
+              next=false;
+              thread("randomizer");
             }
           }
         }
