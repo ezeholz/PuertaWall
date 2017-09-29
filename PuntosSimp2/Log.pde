@@ -2,7 +2,7 @@ class Log {
   private PrintWriter output;
   private String path=sketchPath();
   private String fileName;
-  private int id=1;
+  public int id=1;
  
   Log(String pth,String fileName, boolean overwrite, boolean create) {
     path = path+pth;
@@ -71,19 +71,21 @@ void texto() {
   else {fill(0,255,0); text("TRACKEANDO", width/2, height);}
 }
 
-void conteo() {
-  if (bod != 0 && time == 0) {time = millis();} else if (bod == 0) {time = 0;}
+void conteo(boolean doit) {
+  if (bod != 0 && time == 0 && doit) {time = millis();} 
+  else if (bod == 0) {time = 0; sec2 = 0;} if (!doit) {time = 0; sec2 = 0;}
   if (time != 0) {
     if (time+1000*sec2+1000 <= millis() && sec2<sec) {sec2++;} else if (sec2 == sec) {sec2=0;}
     textSize(72);
     textAlign(CENTER, CENTER);
-    if (bod != 0 && millis() >= time+1000*sec2) {text(sec-sec2,width/2,height/2);}
-  } else {textSize(72);textAlign(CENTER, CENTER);text(sec-sec2+1,width/2,height/2);}
+    fill(0,0,255,180);
+    if (bod != 0 && millis() >= time+1000*sec2 && doit) {text(sec-sec2,width/2,height/2);}
+  } else {textSize(72);textAlign(CENTER, CENTER);fill(0,0,255,180);text(sec,width/2,height/2);}
 }
 
 void savepos() {
   pos.beginDraw();
-  pos.background(255);
+  pos.background(136,6,206);
   pos.image(kinect.GetMask(), 0, 0, width, height);
   pos.endDraw();
 }

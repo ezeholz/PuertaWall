@@ -18,7 +18,7 @@ PVector[] posc = new PVector[20];
 Kinect kinect;
 Log log;
 
-final int totalrond = 3;
+final int totalrond = 5;
 
 PGraphics pos;
 String[] escr = new String[5];
@@ -39,7 +39,6 @@ void setup() {
   
   ellipseMode(RADIUS);
   
-  if (rond == -1){pose[1] = 0;}
   back = bg("/Posiciones/posini.jpg");
   background(back);
   
@@ -49,7 +48,7 @@ void setup() {
 }
 
 void draw() {
-  if (rond != -1) {
+  if (rond > 0) {
     background(back);
     image(kinect.GetMask(), 0, 0, width, height);
   } else if (time != -1) {background(0);}
@@ -142,6 +141,8 @@ void keyPressed() {
     pos = createGraphics(width, height);
     time=0;
     rond=0;
+    next = false;
+    back = bg("/Posiciones/posini.jpg");
   }
 }
 
