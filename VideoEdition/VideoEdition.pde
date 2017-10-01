@@ -8,21 +8,18 @@
 */
 
 import processing.opengl.*;
-//import kinect4WinSDK.Kinect;
-//import kinect4WinSDK.SkeletonData;
-//ArrayList <SkeletonData> bodies;
+import kinect4WinSDK.Kinect;
+import kinect4WinSDK.SkeletonData;
+ArrayList <SkeletonData> bodies;
 
 PImage back;
-PVector[] posc = new PVector[20];
 
-//Kinect kinect;
+Kinect kinect;
 Log log;
 
-final int totalrond = 3;
+final int totalrond = 5;
 
-PGraphics pos;
-String[] escr = new String[5];
-int rond = 0, time = 0, bod = 0, sec = 5, sec2 = 0;
+int rond = -1, time = 0, bod = 0, sec = 5, sec2 = 0, est = 0;
 int[] pose=new int[totalrond + 1];
 boolean next = false;
 
@@ -32,29 +29,28 @@ void settings() {
 }
 
 void setup() {
-  //kinect = new Kinect(this);
+  kinect = new Kinect(this);
   log= new Log("/Posiciones/","Poses.txt",false, false);
-  //smooth(3);
-  //bodies = new ArrayList<SkeletonData>();
+  smooth(3);
+  bodies = new ArrayList<SkeletonData>();
   
   ellipseMode(RADIUS);
   
   back = bg("/Posiciones/posini.jpg");
   background(back);
   
-  thread("randomizer");
+  est = hour()*10000 + minute()*100 + second();
   
-  pos = createGraphics(width, height);
+  thread("randomizer");
 }
 
 void draw() {
-  if (track()) {bod = 40;} else {bod = 0;}
-  if (rond != -1 || rond != 0) {
+  if (rond > 0) {
     background(back);
-    //image(kinect.GetMask(), 0, 0, width, height);
+    image(kinect.GetMask(), 0, 0, width, height);
   } else if (time != -1) {background(0);}
   switch (rond) {
-    case -1 : desarrollador(); break;
+    case -1 : ganador(); break;
     case 0 : calibracion(); break;
     default : poseunica(); break;
   }
@@ -66,99 +62,80 @@ PImage bg(String a) {
   return rta;
 }
 
-//void appearEvent(SkeletonData _s) 
-//{if (bod == 0){
-//  if (_s.trackingState == Kinect.NUI_SKELETON_NOT_TRACKED) 
-//  {
-//    return;
-//  }
-//  synchronized(bodies) {
-//    bodies.add(_s);
-//    bod = _s.dwTrackingID;
-//  }
-//}}
+void appearEvent(SkeletonData _s) 
+{if (bod == 0){
+  if (_s.trackingState == Kinect.NUI_SKELETON_NOT_TRACKED) 
+  {
+    return;
+  }
+  synchronized(bodies) {
+    bodies.add(_s);
+    bod = _s.dwTrackingID;
+  }
+}}
 
-//void disappearEvent(SkeletonData _s) 
-//{if (bod != 0){
-//  synchronized(bodies) {
-//    for (int i=bodies.size ()-1; i>=0; i--) 
-//    {
-//      if (_s.dwTrackingID == bodies.get(i).dwTrackingID || 0 == bodies.get(i).dwTrackingID) 
-//      {
-//        bodies.remove(i);
-//        bod = 0;
-//      }
-//    }
-//  }
-//}}
+void disappearEvent(SkeletonData _s) 
+{if (bod != 0){
+  synchronized(bodies) {
+    for (int i=bodies.size ()-1; i>=0; i--) 
+    {
+      if (_s.dwTrackingID == bodies.get(i).dwTrackingID || 0 == bodies.get(i).dwTrackingID) 
+      {
+        bodies.remove(i);
+        bod = 0;
+      }
+    }
+  }
+}}
 
-//void moveEvent(SkeletonData _b, SkeletonData _a)
-//{
-//  if (_a.trackingState == Kinect.NUI_SKELETON_NOT_TRACKED) 
-//  {
-//    return;
-//  }
-//  synchronized(bodies) {
-//    for (int i=bodies.size ()-1; i>=0; i--) 
-//    {
-//      if (_b.dwTrackingID == bodies.get(i).dwTrackingID) 
-//      {
-//        bodies.get(i).copy(_a);
-//        break;
-//      }
-//    }
-//  }
-//}
-
-//boolean track(SkeletonData _s) {
-//  int b = Kinect.NUI_SKELETON_POSITION_HEAD;
-//  if (_s.skeletonPositionTrackingState[b] != Kinect.NUI_SKELETON_POSITION_NOT_TRACKED) {return true;} else {return false;}
-//}
-
-//float pos(SkeletonData _s, int b, char c) {
-//  //a = "Kinect.NUI_SKELETON_POSITION_" + a;
-//  //int b = a.substring(0);
-//  if (c == 'x') {return _s.skeletonPositions[b].x*width;}
-//  if (c == 'y') {return _s.skeletonPositions[b].y*height;}
-//  if (c == 'z') {return _s.skeletonPositions[b].z*-8000;}
-//  else return Kinect.NUI_SKELETON_POSITION_NOT_TRACKED;
-//}
-
-//boolean det(SkeletonData _s, int s, int x, int y, int d) {
-//  if (pos(_s, s, 'x') >= x-d && pos(_s, s, 'x') <= x+d) {
-//    if (pos(_s, s, 'y') >= y-d && pos(_s, s, 'y') <= y+d) {
-//      return true;
-//    } else {return false;}
-//  } else {return false;}
-//}
-
-boolean det(int x, int y, int d) {
-  if (mouseX >= x-d && mouseX <= x+d) {
-    if (mouseY >= y-d && mouseY <= y+d) {
-      return true;
-    } else {return false;}
-  } else {return false;}
+void moveEvent(SkeletonData _b, SkeletonData _a)
+{
+  if (_a.trackingState == Kinect.NUI_SKELETON_NOT_TRACKED) 
+  {
+    return;
+  }
+  synchronized(bodies) {
+    for (int i=bodies.size ()-1; i>=0; i--) 
+    {
+      if (_b.dwTrackingID == bodies.get(i).dwTrackingID) 
+      {
+        bodies.get(i).copy(_a);
+        break;
+      }
+    }
+  }
 }
 
-boolean track() {
-  if (mouseX >= 1 && mouseX <= width-1) {
-    if (mouseY >= 1 && mouseY <= height-1) {
-      return true;
-    } else {return false;}
-  } else {return false;}
+boolean track(SkeletonData _s) {
+  int b = Kinect.NUI_SKELETON_POSITION_HEAD;
+  if (_s.skeletonPositionTrackingState[b] != Kinect.NUI_SKELETON_POSITION_NOT_TRACKED) {return true;} else {return false;}
+}
+
+float pos(SkeletonData _s, int b, char c) {
+  //a = "Kinect.NUI_SKELETON_POSITION_" + a;
+  //int b = a.substring(0);
+  if (c == 'x') {return _s.skeletonPositions[b].x*width;}
+  if (c == 'y') {return _s.skeletonPositions[b].y*height;}
+  if (c == 'z') {return _s.skeletonPositions[b].z*-8000;}
+  else return Kinect.NUI_SKELETON_POSITION_NOT_TRACKED;
+}
+
+boolean det(SkeletonData _s, int s, int x, int y, int d) {
+  if (pos(_s, s, 'x') >= x-d && pos(_s, s, 'x') <= x+d) {
+        if (pos(_s, s, 'y') >= y-d && pos(_s, s, 'y') <= y+d) {
+          return true;
+        } else {return false;}
+      } else {return false;}
 }
 
 void keyPressed() {
-  if (key == ' '  && rond == -1) {
-    if (time == 0) {time = millis();} else {time = 0;}
-  } else 
-  if (key=='*' && rond == -1 && time == -1) {
-    pose[1]=0;
-    escr = new String[5];
-    pos = createGraphics(width, height);
+  if (key=='*' && rond == -1) {
+    thread("randomizer");
     time=0;
     rond=0;
     next = false;
+    est = hour()*10000 + minute()*100 + second();
+    back = bg("/Posiciones/posini.jpg");
   }
 }
 
@@ -189,9 +166,9 @@ int[] poses() {
 void randomizer() {
   randomSeed(hour()*10000+minute()*100+second());
   int num=1,id=log.id;
-  int[] rounds = new int[totalrond + 1];
+  int[] rounds = new int[totalrond+1];
   rounds[0] = 0;
-  while(num != totalrond + 1){
+  while(num!=totalrond+1){
     int prox = (int)random(id);
     boolean yes = true;
     for(int x = 0;x < num;x++) {
@@ -199,6 +176,5 @@ void randomizer() {
     }
     if(yes){rounds[num]=prox;num++;}
   }
-  println(rounds);
   pose = rounds;
 }

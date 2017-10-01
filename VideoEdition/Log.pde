@@ -2,7 +2,7 @@ class Log {
   private PrintWriter output;
   private String path=sketchPath();
   private String fileName;
-  private int id=1;
+  public int id=1;
  
   Log(String pth,String fileName, boolean overwrite, boolean create) {
     path = path+pth;
@@ -66,24 +66,23 @@ class Log {
 
 void texto() {
   textSize(20);
-  textAlign(CENTER, BOTTOM);
-  if (bod == 0) {fill(255,0,0); text("NO ESTA TRACKEANDO", width/2, height);}
-  else {fill(0,255,0); text("TRACKEANDO", width/2, height);}
+  textAlign(LEFT, TOP);
+  fill(0); rect(0,0,420,110);
+  fill(255); text("Ubique su cuerpo de acuerdo a los colores", 0, 0);
+  text("Intente estar lo más cómod@ posible", 0, 20);
+  fill(204,0,204,180); text("CABEZA", 0, 40);
+  fill(0,255,255,180); text("MANOS", 0, 60);
+  fill(255,255,0,180); text("PIES", 0, 80);
 }
 
-void conteo() {
-  if (bod != 0 && time == 0) {time = millis();} else if (bod == 0) {time = 0;}
+void conteo(boolean doit) {
+  if (bod != 0 && time == 0 && doit) {time = millis();} 
+  else if (bod == 0) {time = 0; sec2 = 0;} if (!doit) {time = 0; sec2 = 0;}
   if (time != 0) {
     if (time+1000*sec2+1000 <= millis() && sec2<sec) {sec2++;} else if (sec2 == sec) {sec2=0;}
     textSize(72);
     textAlign(CENTER, CENTER);
-    if (bod != 0 && millis() >= time+1000*sec2) {text(sec-sec2,width/2,height/2);}
-  } else {textSize(72);textAlign(CENTER, CENTER);text(sec,width/2,height/2);}
-}
-
-void savepos() {
-  pos.beginDraw();
-  pos.background(255);
-  //pos.image(kinect.GetMask(), 0, 0, width, height);
-  pos.endDraw();
+    fill(0,0,255,180);
+    if (bod != 0 && millis() >= time+1000*sec2 && doit) {text(sec-sec2,width/2,height/2);}
+  } else {textSize(72);textAlign(CENTER, CENTER);fill(0,0,255,180);text(sec,width/2,height/2);}
 }
