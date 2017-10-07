@@ -4,6 +4,8 @@
 #
 #    Ezequiel G. Holzweissig
 #    
+#  190 cm
+#
 #    www.puerta18.org.ar
 */
 
@@ -19,13 +21,13 @@ Log log;
 
 final int totalrond = 5;
 
-int rond = -1, time = 0, bod = 0, sec = 5, sec2 = 0, est = 0;
+int rond = 0, time = 0, bod = 0, sec = 5, sec2 = 0, est = 0;
 int[] pose=new int[totalrond + 1];
 boolean next = false;
 
 void settings() {
-    size(1024, 768, OPENGL);
-    //fullScreen(OPENGL, 2);
+    //size(1024, 768, OPENGL);
+    fullScreen(OPENGL, 2);
 }
 
 void setup() {
@@ -47,6 +49,7 @@ void setup() {
 void draw() {
   if (rond > 0) {
     background(back);
+    tint(255, 220);
     image(kinect.GetMask(), 0, 0, width, height);
   } else if (time != -1) {background(0);}
   switch (rond) {
@@ -129,7 +132,8 @@ boolean det(SkeletonData _s, int s, int x, int y, int d) {
 }
 
 void keyPressed() {
-  if (key=='*' && rond == -1) {
+  if (key=='*') {
+    pose=new int[totalrond + 1];
     thread("randomizer");
     time=0;
     rond=0;
