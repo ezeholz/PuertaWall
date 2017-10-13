@@ -65,10 +65,23 @@ class Log {
 }
 
 void texto() {
-  textSize(20);
-  textAlign(CENTER, BOTTOM);
-  if (bod == 0) {fill(255,0,0); text("NO ESTA TRACKEANDO", width/2, height);}
-  else {fill(0,255,0); text("TRACKEANDO", width/2, height);}
+  switch (rond) {
+  case 0 :
+    textSize(20);
+    textAlign(LEFT, TOP);
+    fill(0); rect(0,0,420,110);
+    fill(255); text("Ubique su cuerpo de acuerdo a los colores", 0, 0);
+    text("Intente estar lo más cómod@ posible", 0, 20);
+    fill(204,0,204,180); text("CABEZA", 0, 40);
+    fill(0,255,255,180); text("MANOS", 0, 60);
+    fill(255,255,0,180); text("PIES", 0, 80); 
+    textAlign(TOP, RIGHT);
+    text(name, 0, height); break;
+  default :
+    image(bg("/Posiciones/pos" + pose[rond] + ".jpg"),20,20,width/8+20,height/8+20);
+    textAlign(TOP, RIGHT);
+    text(round((millis()-time)/1000),0,height);
+  }
 }
 
 void conteo(boolean doit) {

@@ -14,6 +14,8 @@ ArrayList <SkeletonData> bodies;
 
 PImage back;
 PVector[] posc = new PVector[20];
+IntDict table = new IntDict();
+String name = "";
 
 Kinect kinect;
 Log log;
@@ -22,7 +24,7 @@ final int totalrond = 5;
 
 PGraphics pos;
 String[] escr = new String[5];
-int rond = 0, time = 0, bod = 0, sec = 5, sec2 = 0;
+int rond = 0, time = 0, bod = 0, sec = 5, sec2 = 0, est = 0, punt = 0;
 int[] pose=new int[totalrond + 1];
 boolean next = false;
 
@@ -42,6 +44,8 @@ void setup() {
   back = bg("/Posiciones/posini.jpg");
   background(back);
   
+  est = hour()*10000 + minute()*100 + second();
+  
   thread("randomizer");
   
   pos = createGraphics(width, height);
@@ -49,10 +53,11 @@ void setup() {
 
 void draw() {
   if (rond > 0) {
-    background(back);
+    background(255);
     image(kinect.GetMask(), 0, 0, width, height);
   } else if (time != -1) {background(0);}
   switch (rond) {
+    case -2 : ganador(); break;
     case -1 : desarrollador(); break;
     case 0 : calibracion(); break;
     default : poseunica(); break;
@@ -132,16 +137,24 @@ boolean det(SkeletonData _s, int s, int x, int y, int d) {
 }
 
 void keyPressed() {
+  if (rond == 0) {
+    if (key >= 'a' && key <= 'z' || key >='A' && key<='Z') name += key;
+    if (key == ' ') name += ' ';
+    if (key == BACKSPACE && name.length() > 0) name = name.substring(0,name.length()-1);
+    if (key == ENTER) name = "";
+  }
   if (key == ' '  && rond == -1) {
     if (time == 0) {time = millis();} else {time = 0;}
   } else 
   if (key=='*' && rond == -1 && time == -1) {
-    pose[1]=0;
+    pose=new int[totalrond + 1];
+    thread("randomizer");
     escr = new String[5];
     pos = createGraphics(width, height);
     time=0;
     rond=0;
     next = false;
+    est = hour()*10000 + minute()*100 + second();
     back = bg("/Posiciones/posini.jpg");
   }
 }

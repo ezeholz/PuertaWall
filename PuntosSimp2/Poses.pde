@@ -30,7 +30,10 @@ void calibracion() {
 }
 
 void poseunica() {
-  if (next) {back = bg("/Posiciones/pos" + pose[rond] + ".jpg");next = false;}
+  tint(255,120);
+  image(bg("/Posiciones/pos" + pose[rond] + ".jpg"),0,0,width,height);
+  tint(255);
+  texto();
   
   int[] pos1 = poses();
   
@@ -53,12 +56,15 @@ void poseunica() {
   if (four) {fill(0,255,0,180);} else {fill(255,0,0,180);} ellipse(pos1[10], pos1[11], 30, 30);
   if (five) {fill(0,255,0,180);} else {fill(255,0,0,180);} ellipse(pos1[13], pos1[14], 30, 30);
   if (one && two && three && four && five) {
+    tint(255,255);
     image(kinect.GetImage(), 0, 0, width, height);
-    saveFrame("Ganadores/####.jpg");
-    next = true;
-    if (rond != totalrond) {rond++;} else {rond = 0; next = true;}
-    time=millis();
-    while(time >= millis()-5000){};
+    for (int p = millis(); p > millis()-500;) {saveFrame("Ganadores/" + est +"/" + pose[rond] + ".jpg");}
+    for (int p = millis(); p > millis()-3000;) {image(bg("Ganadores/" + est +"/" + pose[rond] + ".jpg"),0,0,width,height);}
+    if (rond != totalrond) {rond++;} else {
+      rond = 0; next = true;
+      table.set(name,millis()-time); table.sortValues();
+      if (table.size() >= 6) table.remove(table.keyArray()[table.size()-1]);
+    }
     return;
     }
   }
@@ -89,80 +95,36 @@ void desarrollador() {
 
 void drawSkeleton(SkeletonData _s) {
   // Body
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_HEAD, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_CENTER);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_CENTER, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_LEFT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_CENTER, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_RIGHT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_CENTER, 
-  Kinect.NUI_SKELETON_POSITION_SPINE);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_LEFT, 
-  Kinect.NUI_SKELETON_POSITION_SPINE);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_RIGHT, 
-  Kinect.NUI_SKELETON_POSITION_SPINE);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_SPINE, 
-  Kinect.NUI_SKELETON_POSITION_HIP_CENTER);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_HIP_CENTER, 
-  Kinect.NUI_SKELETON_POSITION_HIP_LEFT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_HIP_CENTER, 
-  Kinect.NUI_SKELETON_POSITION_HIP_RIGHT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_HIP_LEFT, 
-  Kinect.NUI_SKELETON_POSITION_HIP_RIGHT);
+  DrawBone(_s, 3, 2);
+  DrawBone(_s, 2, 4);
+  DrawBone(_s, 2, 8);
+  DrawBone(_s, 2, 1);
+  DrawBone(_s, 4, 1);
+  DrawBone(_s, 8, 1);
+  DrawBone(_s, 1, 0);
+  DrawBone(_s, 0, 12);
+  DrawBone(_s, 0, 16);
+  DrawBone(_s, 12, 16);
 
   // Left Arm
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_LEFT, 
-  Kinect.NUI_SKELETON_POSITION_ELBOW_LEFT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_ELBOW_LEFT, 
-  Kinect.NUI_SKELETON_POSITION_WRIST_LEFT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_WRIST_LEFT, 
-  Kinect.NUI_SKELETON_POSITION_HAND_LEFT);
+  DrawBone(_s, 4, 5);
+  DrawBone(_s, 5, 6);
+  DrawBone(_s, 6, 7);
 
   // Right Arm
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_SHOULDER_RIGHT, 
-  Kinect.NUI_SKELETON_POSITION_ELBOW_RIGHT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_ELBOW_RIGHT, 
-  Kinect.NUI_SKELETON_POSITION_WRIST_RIGHT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_WRIST_RIGHT, 
-  Kinect.NUI_SKELETON_POSITION_HAND_RIGHT);
+  DrawBone(_s, 8, 9);
+  DrawBone(_s, 9, 10);
+  DrawBone(_s, 10, 11);
 
   // Left Leg
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_HIP_LEFT, 
-  Kinect.NUI_SKELETON_POSITION_KNEE_LEFT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_KNEE_LEFT, 
-  Kinect.NUI_SKELETON_POSITION_ANKLE_LEFT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_ANKLE_LEFT, 
-  Kinect.NUI_SKELETON_POSITION_FOOT_LEFT);
+  DrawBone(_s, 12, 13);
+  DrawBone(_s, 13, 14);
+  DrawBone(_s, 14, 15);
 
   // Right Leg
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_HIP_RIGHT, 
-  Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_KNEE_RIGHT, 
-  Kinect.NUI_SKELETON_POSITION_ANKLE_RIGHT);
-  DrawBone(_s, 
-  Kinect.NUI_SKELETON_POSITION_ANKLE_RIGHT, 
-  Kinect.NUI_SKELETON_POSITION_FOOT_RIGHT);
+  DrawBone(_s, 16, 17);
+  DrawBone(_s, 17, 18);
+  DrawBone(_s, 18, 19);
 }
 
 void DrawBone(SkeletonData _s, int _j1, int _j2) 
@@ -220,6 +182,32 @@ void DrawPoints(PVector[] vector) {
           }
         }
       }
+    }
+  }
+}
+
+void ganador() {
+  if (time == 0)time = millis();
+  color[] c = {color(#FF00FF),color(#3333FF),color(#00FF00),color(#FFFF00),color(#FF0000)};
+  textAlign(CENTER, CENTER);
+  textSize(72);
+  back = bg("/Posiciones/posini.jpg");
+  background(back);
+  for (int p = millis(); p > millis()-15000;) {
+    for (int i = 1; i < 16;) {
+      image(bg("Ganadores/" + est + "/" + i + ".jpg"), 0, 0, width, height);
+      fill(c[round(random(1,6))]);
+      textAlign(TOP, CENTER);
+      text("GANASTE!!",width/8,0);
+      int x = 0;
+      for (String t : table.keyArray()){
+        textAlign(TOP, LEFT);
+        text(t,20,height/8*x+3);
+        textAlign(TOP, RIGHT);
+        text(table.get(t),width-20,height/8*x+3);
+        x++;
+      }
+      if (i == round((millis()-p)/1000)) {i++;}
     }
   }
 }
