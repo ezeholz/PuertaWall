@@ -60,7 +60,7 @@ void poseunica() {
     image(kinect.GetImage(), 0, 0, width, height);
     for (int p = millis(); p > millis()-500;) {saveFrame("Ganadores/" + est +"/" + pose[rond] + ".jpg");}
     for (int p = millis(); p > millis()-3000;) {image(bg("Ganadores/" + est +"/" + pose[rond] + ".jpg"),0,0,width,height);}
-    if (rond != totalrond) {rond++;} else {
+    if (rond < totalrond) {rond++;} else {
       rond = 0; next = true;
       table.set(name,millis()-time); table.sortValues();
       if (table.size() >= 6) table.remove(table.keyArray()[table.size()-1]);
@@ -189,7 +189,6 @@ void DrawPoints(PVector[] vector) {
 void ganador() {
   if (time == 0)time = millis();
   color[] c = {color(#FF00FF),color(#3333FF),color(#00FF00),color(#FFFF00),color(#FF0000)};
-  textAlign(CENTER, CENTER);
   textSize(72);
   back = bg("/Posiciones/posini.jpg");
   background(back);
@@ -198,13 +197,15 @@ void ganador() {
       image(bg("Ganadores/" + est + "/" + i + ".jpg"), 0, 0, width, height);
       fill(c[round(random(1,6))]);
       textAlign(TOP, CENTER);
-      text("GANASTE!!",width/8,0);
+      text("GANASTE!!",width/2,height/8);
       int x = 0;
       for (String t : table.keyArray()){
+        fill(255);
         textAlign(TOP, LEFT);
-        text(t,20,height/8*x+3);
+        if (t.equals(name)) fill(color(#FBCA7F));
+        text(t,20,height/8*(x+3));
         textAlign(TOP, RIGHT);
-        text(table.get(t),width-20,height/8*x+3);
+        text(table.get(t),width-20,height/8*(x+3));
         x++;
       }
       if (i == round((millis()-p)/1000)) {i++;}

@@ -146,14 +146,14 @@ void keyPressed() {
   if (key == ' '  && rond == -1) {
     if (time == 0) {time = millis();} else {time = 0;}
   } else 
-  if (key=='*' && rond == -1 && time == -1) {
+  if (key=='*') {
+    time=0;
+    rond=0;
+    next = false;
     pose=new int[totalrond + 1];
     thread("randomizer");
     escr = new String[5];
     pos = createGraphics(width, height);
-    time=0;
-    rond=0;
-    next = false;
     est = hour()*10000 + minute()*100 + second();
     back = bg("/Posiciones/posini.jpg");
   }
