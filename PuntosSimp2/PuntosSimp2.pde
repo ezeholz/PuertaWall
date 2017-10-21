@@ -20,8 +20,9 @@ String name = "";
 Kinect kinect;
 Log log;
 
-final int totalrond = 5;
+final int totalrond = 2;
 
+PImage[] img = new PImage[totalrond];
 PGraphics pos;
 String[] escr = new String[5];
 int rond = 0, time = 0, bod = 0, sec = 5, sec2 = 0, est = 0, punt = 0;
@@ -137,26 +138,34 @@ boolean det(SkeletonData _s, int s, int x, int y, int d) {
 }
 
 void keyPressed() {
-  if (rond == 0) {
-    if (key >= 'a' && key <= 'z' || key >='A' && key<='Z') name += key;
-    if (key == ' ') name += ' ';
-    if (key == BACKSPACE && name.length() > 0) name = name.substring(0,name.length()-1);
-    if (key == ENTER) name = "";
-  }
+  if ((key >= 'a' && key <= 'z') || (key >='A' && key<='Z')) {name += key;}
+  if (key == ' ' && rond != -1) {name += ' ';}
+  if (key == BACKSPACE && name.length() > 0) {name = name.substring(0,name.length()-1);}
+  if (key == ENTER) {name = "";}
+  if (key == '@') {name += key;}
   if (key == ' '  && rond == -1) {
     if (time == 0) {time = millis();} else {time = 0;}
   } else 
-  if (key=='*') {
+  if (key == '*' && rond == -1) {
+    time=0;
+    rond=-2;
+    next=false;
+    pose=new int[totalrond + 1];
+    escr = new String[5];
+    pos = createGraphics(width, height);
+    est = hour()*10000 + minute()*100 + second();
+  } else
+  if (key=='*' && rond != -1) {
     time=0;
     rond=0;
     next = false;
     pose=new int[totalrond + 1];
-    thread("randomizer");
     escr = new String[5];
     pos = createGraphics(width, height);
     est = hour()*10000 + minute()*100 + second();
-    back = bg("/Posiciones/posini.jpg");
+    thread("randomizer");
   }
+  if (key == '/') {thread("randomizer");}
 }
 
 int[] poses() {
@@ -184,7 +193,7 @@ int[] poses() {
 }
 
 void randomizer() {
-  randomSeed(hour()*10000+minute()*100+second());
+  randomSeed(second()*10000+millis()*100+second());
   int num=1,id=log.id;
   int[] rounds = new int[totalrond+1];
   rounds[0] = 0;

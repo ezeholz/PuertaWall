@@ -4,6 +4,7 @@ void calibracion() {
     boolean one = false, two = false, three = false, four = false, five = false;
     background(204,0,204);
     for (int i=0; i<bodies.size(); i++) {
+      if (next) {try {loadImage("Ganadores/"+ est + "/"+ totalrond +".jpg");} catch (Exception e) {pos.save("Ganadores/"+ est + "/"+ totalrond +".jpg");}}
       SkeletonData _s = bodies.get(i);
       background(255);
       image(kinect.GetMask(), 0, 0, width, height);
@@ -23,7 +24,7 @@ void calibracion() {
         if (five) {fill(0,255,0,180);} else {fill(255,255,0,180);} ellipse(pos1[13], pos1[14], 30, 30);
         if (one && two && three && four && five) {conteo(true);} else {conteo(false);}
       }
-      if (sec == sec2 && !next) {time = 0; rond = 1; sec = 10; sec2 = 0; next=true; escr = new String[5];
+      if (sec == sec2 && !next) {time = millis(); rond = 1; sec2 = 0; next=true; escr = new String[5];
       } else if (sec == sec2 && next) {pose[1] = 0; time = millis(); rond = -1;}
     }
   } else {background(back);}
@@ -31,7 +32,8 @@ void calibracion() {
 
 void poseunica() {
   tint(255,120);
-  image(bg("/Posiciones/pos" + pose[rond] + ".jpg"),0,0,width,height);
+  try {loadImage("Ganadores/"+ est + "/"+ (rond-1) +".jpg");} catch (Exception e) {pos.save("Ganadores/"+ est + "/"+ (rond-1) +".jpg");}
+  image(loadImage("/Posiciones/pos" + pose[rond] + ".jpg"),0,0,width,height);
   tint(255);
   texto();
   
@@ -56,14 +58,11 @@ void poseunica() {
   if (four) {fill(0,255,0,180);} else {fill(255,0,0,180);} ellipse(pos1[10], pos1[11], 30, 30);
   if (five) {fill(0,255,0,180);} else {fill(255,0,0,180);} ellipse(pos1[13], pos1[14], 30, 30);
   if (one && two && three && four && five) {
-    tint(255,255);
-    image(kinect.GetImage(), 0, 0, width, height);
-    for (int p = millis(); p > millis()-500;) {saveFrame("Ganadores/" + est +"/" + pose[rond] + ".jpg");}
-    for (int p = millis(); p > millis()-3000;) {image(bg("Ganadores/" + est +"/" + pose[rond] + ".jpg"),0,0,width,height);}
+    thread("saveimg");
     if (rond < totalrond) {rond++;} else {
       rond = 0; next = true;
       table.set(name,millis()-time); table.sortValues();
-      if (table.size() >= 6) table.remove(table.keyArray()[table.size()-1]);
+      for (;table.size() >= 6;) table.remove(table.keyArray()[table.size()-1]);
     }
     return;
     }
@@ -77,12 +76,11 @@ void desarrollador() {
   }
   image(kinect.GetImage(), 0, 0, width, height);
   for (int i=0; i<bodies.size (); i++) {
-    textAlign(LEFT, BOTTOM);
-    text(time,0,height/2);
+    texto();
     SkeletonData _s = bodies.get(i);
     drawSkeleton(_s);
     while (time <= millis()-5000  && _s.dwTrackingID == bod && time > 0) {
-      thread("savepos");
+      thread("savemask");
       //save("Posiciones/pos"+ log.id +".jpg");
       for(int y = 0;y<20;y++){
         posc[y] = _s.skeletonPositions[y].copy();
@@ -174,10 +172,8 @@ void DrawPoints(PVector[] vector) {
               pose=new int[totalrond + 1];
               pos = createGraphics(width, height);
               time=0;
-              rond=0;
+              rond=-2;
               next=false;
-              back = bg("/Posiciones/posini.jpg");
-              thread("randomizer");
             }
           }
         }
@@ -187,28 +183,29 @@ void DrawPoints(PVector[] vector) {
 }
 
 void ganador() {
-  if (time == 0)time = millis();
+  if (time == 0) {time = millis();}
   color[] c = {color(#FF00FF),color(#3333FF),color(#00FF00),color(#FFFF00),color(#FF0000)};
   textSize(72);
-  back = bg("/Posiciones/posini.jpg");
-  background(back);
-  for (int p = millis(); p > millis()-15000;) {
-    for (int i = 1; i < 16;) {
-      image(bg("Ganadores/" + est + "/" + i + ".jpg"), 0, 0, width, height);
-      fill(c[round(random(1,6))]);
+  for (int i = 1; i <= totalrond; i++) {
+    try {img[i-1] = loadImage("Ganadores/" + est + "/" + i + ".jpg");} catch(Exception e) {img[i-1] = null;}
+  }
+    for (int i = 0; i < totalrond;i++) {
+      background(0);
+      if (img[i] != null) {image(img[i], 0, 0, width, height);} else {background(0);}
+      fill(c[round(random(0,4))]);
       textAlign(TOP, CENTER);
       text("GANASTE!!",width/2,height/8);
       int x = 0;
       for (String t : table.keyArray()){
         fill(255);
         textAlign(TOP, LEFT);
-        if (t.equals(name)) fill(color(#FBCA7F));
+        if (t.equals(name)) {fill(color(#FBCA7F));}
         text(t,20,height/8*(x+3));
         textAlign(TOP, RIGHT);
         text(table.get(t),width-20,height/8*(x+3));
         x++;
       }
-      if (i == round((millis()-p)/1000)) {i++;}
+      //if (i <= round((millis()-time)/1000)) {i++;}
+      //if (i == totalrond) {i = 1;}
     }
-  }
 }
