@@ -3,9 +3,12 @@ void calibracion() {
     int[] pos1 = poses();
     boolean one = false, two = false, three = false, four = false, five = false;
     background(204,0,204);
+    textAlign(LEFT, BOTTOM);textSize(72);
+    fill(0,0,255,180); text(name, 0, height);
     for (int i=0; i<bodies.size(); i++) {
-      if (next) {try {loadImage("Ganadores/"+ est + "/"+ totalrond +".jpg");} catch (Exception e) {pos.save("Ganadores/"+ est + "/"+ totalrond +".jpg");}}
-      SkeletonData _s = bodies.get(i);
+      if (next) {try {image(loadImage("/Ganadores/"+ est + "/"+ totalrond +".jpg"),0,0,0,0);} catch (Exception e) {pos.save("/Ganadores/"+ est + "/"+ totalrond +".jpg");}}
+      SkeletonData _s;
+      try {_s = bodies.get(i);} catch (Exception e) {return;}
       background(255);
       image(kinect.GetMask(), 0, 0, width, height);
       texto();
@@ -24,7 +27,7 @@ void calibracion() {
         if (five) {fill(0,255,0,180);} else {fill(255,255,0,180);} ellipse(pos1[13], pos1[14], 30, 30);
         if (one && two && three && four && five) {conteo(true);} else {conteo(false);}
       }
-      if (sec == sec2 && !next) {time = millis(); rond = 1; sec2 = 0; next=true; escr = new String[5];
+      if (sec == sec2 && !next) {time = millis(); rond = 1; sec2 = 0; escr = new String[5];
       } else if (sec == sec2 && next) {pose[1] = 0; time = millis(); rond = -1;}
     }
   } else {background(back);}
@@ -32,7 +35,7 @@ void calibracion() {
 
 void poseunica() {
   tint(255,120);
-  try {loadImage("Ganadores/"+ est + "/"+ (rond-1) +".jpg");} catch (Exception e) {pos.save("Ganadores/"+ est + "/"+ (rond-1) +".jpg");}
+  if (next) {try {image(loadImage("/Ganadores/"+ est + "/"+ (rond-1) +".jpg"),0,0,0,0); next = false;} catch (Exception e) {pos.save("/Ganadores/"+ est + "/"+ (rond-1) +".jpg"); next = true;}}
   image(loadImage("/Posiciones/pos" + pose[rond] + ".jpg"),0,0,width,height);
   tint(255);
   texto();
@@ -61,7 +64,7 @@ void poseunica() {
     thread("saveimg");
     if (rond < totalrond) {rond++;} else {
       rond = 0; next = true;
-      table.set(name,millis()-time); table.sortValues();
+      table.set(name,round(millis()-time / 10)); table.sortValues();
       for (;table.size() >= 6;) table.remove(table.keyArray()[table.size()-1]);
     }
     return;
@@ -164,7 +167,7 @@ void DrawPoints(PVector[] vector) {
             if(pose[1]>=4){
               println(escr);
               log= new Log("/Posiciones/","Poses.txt",false, true);
-              pos.save("Posiciones/pos"+ log.id +".jpg");
+              pos.save("/Posiciones/pos"+ log.id +".jpg");
               for (int i=0; i<5; i++) {
                 log.write(escr[i]);
               }
@@ -183,25 +186,31 @@ void DrawPoints(PVector[] vector) {
 }
 
 void ganador() {
-  if (time == 0) {time = millis();}
+  //if (time == 0) {time = millis();}
   color[] c = {color(#FF00FF),color(#3333FF),color(#00FF00),color(#FFFF00),color(#FF0000)};
   textSize(72);
-  for (int i = 1; i <= totalrond; i++) {
-    try {img[i-1] = loadImage("Ganadores/" + est + "/" + i + ".jpg");} catch(Exception e) {img[i-1] = null;}
-  }
+  //for (int i = 1; i <= totalrond; i++) {
+  //  try {img[i-1] = loadImage("Ganadores/" + est + "/" + i + ".jpg");} catch(Exception e) {img[i-1] = null;}
+  //}
     for (int i = 0; i < totalrond;i++) {
       background(0);
-      if (img[i] != null) {image(img[i], 0, 0, width, height);} else {background(0);}
+      if (time == 0) {try {img[i] = loadImage("/Ganadores/"+ est +"/"+ (i+1) +".jpg"); if (i == totalrond-1) {time = millis();}} catch(Exception e) {img[i] = null; time = 0;}}
+      if (img[i] != null) {//image(img[i], 0, 0, width, height);
+        for (int t = round((millis()-time)/1000); t < totalrond;) {
+          image(img[t], 0, 0, width, height);
+          if (totalrond-1 <= t) {time = millis();}
+          t = totalrond+1;
+        }}
       fill(c[round(random(0,4))]);
-      textAlign(TOP, CENTER);
+      textAlign(CENTER, TOP);
       text("GANASTE!!",width/2,height/8);
       int x = 0;
       for (String t : table.keyArray()){
         fill(255);
-        textAlign(TOP, LEFT);
+        textAlign(LEFT, TOP);
         if (t.equals(name)) {fill(color(#FBCA7F));}
         text(t,20,height/8*(x+3));
-        textAlign(TOP, RIGHT);
+        textAlign(RIGHT, TOP);
         text(table.get(t),width-20,height/8*(x+3));
         x++;
       }

@@ -68,7 +68,7 @@ void texto() {
   switch (rond) {
   case -1 :
     textSize(20);
-    textAlign(TOP, CENTER);
+    textAlign(CENTER, TOP);
     fill(255); text("Cree su propia posicion", width/2, 0); break;
   case 0 :
     textSize(20);
@@ -79,12 +79,13 @@ void texto() {
     fill(204,0,204,180); text("CABEZA", 0, 40);
     fill(0,255,255,180); text("MANOS", 0, 60);
     fill(255,255,0,180); text("PIES", 0, 80); 
-    textAlign(BOTTOM, LEFT);
-    text(name, 0, height); break;
+    textAlign(LEFT, BOTTOM);
+    textSize(72);
+    fill(0,0,255,180); text(name, 0, height); break;
   default :
     image(loadImage("/Posiciones/pos" + pose[rond] + ".jpg"),20,20,width/8+20,height/8+20);
-    textAlign(BOTTOM, LEFT);
-    text(round((millis()-time)/1000),0,height);
+    textAlign(LEFT, BOTTOM);
+    fill(0,0,255,180); text(round((millis()-time)/1000),0,height);
   }
 }
 
@@ -112,4 +113,5 @@ void saveimg() {
   pos.tint(255,255);
   pos.image(kinect.GetImage(), 0, 0, width, height);
   pos.endDraw();
+  next = true;
 }

@@ -20,7 +20,7 @@ String name = "";
 Kinect kinect;
 Log log;
 
-final int totalrond = 2;
+final int totalrond = 5;
 
 PImage[] img = new PImage[totalrond];
 PGraphics pos;
@@ -30,8 +30,8 @@ int[] pose=new int[totalrond + 1];
 boolean next = false;
 
 void settings() {
-    size(1024, 768, OPENGL);
-    //fullScreen(OPENGL, 2);
+    //size(1024, 768, OPENGL);
+    fullScreen(OPENGL, 2);
 }
 
 void setup() {
@@ -146,16 +146,11 @@ void keyPressed() {
   if (key == ' '  && rond == -1) {
     if (time == 0) {time = millis();} else {time = 0;}
   } else 
-  if (key == '*' && rond == -1) {
+  if (key == '*' && rond == 0 && next) {
     time=0;
     rond=-2;
-    next=false;
-    pose=new int[totalrond + 1];
-    escr = new String[5];
-    pos = createGraphics(width, height);
-    est = hour()*10000 + minute()*100 + second();
   } else
-  if (key=='*' && rond != -1) {
+  if (key=='*' && rond != 0 && !next) {
     time=0;
     rond=0;
     next = false;
