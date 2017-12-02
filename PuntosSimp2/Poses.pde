@@ -64,7 +64,7 @@ void poseunica() {
     thread("saveimg");
     if (rond < totalrond) {rond++;} else {
       rond = 0; next = true;
-      table.set(name,round(millis()-time / 10)); table.sortValues();
+      table.set(name,round(millis()-time / 100)); table.sortValues();
       for (;table.size() >= 6;) table.remove(table.keyArray()[table.size()-1]);
     }
     return;
